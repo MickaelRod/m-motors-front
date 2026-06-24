@@ -8,11 +8,10 @@ async function filtrerCatalogue(type = '') {
 
     // Détection automatique de l'environnement (Local vs Production)
     const estLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    // En local, on pointe vers le port de l'API Back-Office (ex: 8001)
-    // En production, on utilise le chemin relatif direct
+    // Prise en compte du dossier /back/ isolé sur le serveur en ligne
     const urlBase = estLocalhost 
         ? 'http://localhost:8001/api/recherche.php' 
-        : 'api/recherche.php';
+        : 'back/api/recherche.php';
     const urlApi = `${urlBase}${type ? '?type=' + type : ''}`;
 
     try {
