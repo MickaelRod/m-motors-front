@@ -1,4 +1,4 @@
-name: Deploiement continu Front-Office
+name: Deploiement Continu Front-Office
 
 on:
   push:
@@ -7,13 +7,13 @@ on:
 
 jobs:
   web-deploy:
-    name: Production - Transfert FTP Front-Office
+    name: Production - Transfert Front
     runs-on: ubuntu-latest
     steps:
       - name: Recuperation du code source
         uses: actions/checkout@v4
 
-      - name: Synchronisation FTP Hostinger Front
+      - name: Synchronisation FTP Front
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVEUR }}
