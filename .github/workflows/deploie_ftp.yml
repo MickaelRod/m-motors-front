@@ -1,0 +1,23 @@
+name: Deploiement continu Front-Office
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: Production - Transfert FTP Front-Office
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recuperation du code source
+        uses: actions/checkout@v4
+
+      - name: Synchronisation FTP Hostinger Front
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVEUR }}
+          username: ${{ secrets.FTP_UTILISATEUR }}
+          password: ${{ secrets.FTP_MOT_DE_PASSE }}
+          local-dir: ./
+          server-dir: /public_html/
