@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Vérification initiale : si l'utilisateur est déjà connecté, redirection vers son espace
     try {
-        const reponseSession = await fetch(urlBase + 'session.php', {
+        const reponseSession = await fetch(urlBase + 'session_client.php', {
             method: 'GET',
             credentials: 'include'
         });
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
 
             try {
-                const reponse = await fetch(urlBase + 'connexion.php', {
+                const reponse = await fetch(urlBase + 'connexion_client.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8'

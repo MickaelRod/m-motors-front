@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         // Interrogation du serveur pour valider l'existence de la session active
-        const reponseSession = await fetch(urlBase + 'session.php', {
+        const reponseSession = await fetch(urlBase + 'session_client.php', {
             method: 'GET',
             credentials: 'include'
         });
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (boutonDeconnexion) {
         boutonDeconnexion.addEventListener('click', async () => {
             try {
-                await fetch(urlBase + 'deconnexion.php', {
+                await fetch(urlBase + 'deconnexion_client.php', {
                     method: 'POST',
                     credentials: 'include'
                 });
