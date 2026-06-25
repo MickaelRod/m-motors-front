@@ -157,7 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const reponse = await fetch(urlAction, {
                 method: 'POST',
-                body: donneesFormulaire // Envoi direct du FormData (le navigateur gère les entêtes multi-part automatiquement)
+                body: donneesFormulaire, // Envoi direct du FormData (le navigateur gère les entêtes multi-part automatiquement)
+                credentials: 'include' // Obligatoire pour transmettre le cookie de session PHP au serveur
             });
 
             const resultat = await reponse.json();

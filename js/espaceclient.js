@@ -1,34 +1,71 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const conteneurNom = document.getElementById('nom-utilisateur');
     const boutonDeconnexion = document.getElementById('bouton-deconnexion');
+    const listeDemandes = document.getElementById('liste-demandes');
 
-    // Détection de l'environnement pour définir l'URL de l'API de session
+    // Détection de l'environnement pour définir l'URL de base de l'API
     const estLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const urlSession = estLocalhost ? 'http://localhost:8001/api/session.php' : 'back/api/session.php';
+    const urlBase = estLocalhost ? 'http://localhost:8001/api/' : 'back/api/';
 
     try {
         // Interrogation du serveur pour valider l'existence de la session active
-        const reponse = await fetch(urlSession, {
+        const reponseSession = await fetch(urlBase + 'session.php', {
             method: 'GET',
-            credentials: 'include' // Obligatoire pour transmettre le cookie de session PHP
+            credentials: 'include'
         });
 
-        if (!reponse.ok) {
-            // Si le serveur refuse l'accès, destruction des données locales et redirection
+        if (!reponseSession.ok) {
             sessionStorage.removeItem('utilisateur_nom');
             window.location.replace('connexion.html');
             return;
         }
 
-        const resultat = await reponse.ok ? await reponse.json() : null;
+        const resultatSession = await reponseSession.json();
         
-        // Mise à jour de l'affichage avec le nom officiel validé par le serveur
-        if (conteneurNom && resultat) {
-            conteneurNom.textContent = resultat.utilisateur.nom;
+        if (conteneurNom && resultatSession) {
+            conteneurNom.textContent = resultatSession.utilisateur.nom;
+        }
+
+        // Récupération des demandes de l'utilisateur connecté
+        const reponseDemandes = await fetch(urlBase + 'demandes.php', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (reponseDemandes.ok && listeDemandes) {
+            const resultatDemandes = await reponseDemandes.json();
+            const demandes = resultatDemandes.demandes;
+
+            if (demandes.length > 0) {
+                // Vidage du message par défaut "Aucune demande"
+                listeDemandes.innerHTML = '';
+
+                // Construction dynamique des lignes du tableau
+                demandes.forEach(demande => {
+                    const ligne = document.createElement('tr');
+                    
+                    // Formatage de la date SQL en date française lisible
+                    const dateOption = { year: 'numeric', month: 'long', day: 'numeric' };
+                    const dateLisible = new Date(demande.cree_le).toLocaleDateString('fr-FR', dateOption);
+
+                    // Définition de la couleur du badge Bootstrap selon le statut
+                    let classeBadge = 'bg-secondary';
+                    if (demande.statut === 'En cours d\'étude') classeBadge = 'bg-warning text-dark';
+                    if (demande.statut === 'Approuvé') classeBadge = 'bg-success';
+                    if (demande.statut === 'Refusé') classeBadge = 'bg-danger';
+
+                    ligne.innerHTML = `
+                        <td class="small">${dateLisible}</td>
+                        <td class="fw-bold small text-uppercase">${demande.type_demande}</td>
+                        <td class="small">${demande.vehicule_nom}</td>
+                        <td><span class="badge ${classeBadge}">${demande.statut}</span></td>
+                    `;
+                    listeDemandes.appendChild(ligne);
+                });
+            }
         }
 
     } catch (erreur) {
-        // En cas d'erreur réseau, redirection par mesure de sécurité
         window.location.replace('connexion.html');
         return;
     }
@@ -36,20 +73,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Gestion de la déconnexion de l'utilisateur
     if (boutonDeconnexion) {
         boutonDeconnexion.addEventListener('click', async () => {
-            const estLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const urlDeconnexion = estLocalhost ? 'http://localhost:8001/api/deconnexion.php' : 'back/api/deconnexion.php';
-
             try {
-                // Appel de l'API pour détruire la session côté serveur
-                await fetch(urlDeconnexion, {
+                await fetch(urlBase + 'deconnexion.php', {
                     method: 'POST',
                     credentials: 'include'
                 });
             } catch (erreur) {
-                // L'exécution se poursuit même en cas d'erreur réseau pour garantir la sortie de l'interface
+                // Poursuite de l'exécution en cas d'erreur réseau
             }
 
-            // Nettoyage local et redirection immédiate
             sessionStorage.removeItem('utilisateur_nom');
             window.location.replace('connexion.html');
         });
