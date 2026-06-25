@@ -32,7 +32,12 @@ async function filtrerCatalogue(type = '') {
         // Injection dynamique des cartes de véhicules avec boutons d'action contextuels et transmission des références
         vehicules.forEach(vehicule => {
             let boutonsHtml = '';
+            let affichagePrix = '';
+
             if (vehicule.type_commercial === 'achat') {
+                affichagePrix = (vehicule.prix_achat && parseInt(vehicule.prix_achat) > 0)
+                    ? `${vehicule.prix_achat} €`
+                    : "Prix non communiqué";
                 boutonsHtml = `
                     <div class="d-grid gap-2 mt-3">
                         <button class="btn btn-primary btn-sm" onclick="initierContact('achat', '${vehicule.marque} ${vehicule.modele}', ${vehicule.id})">Acheter comptant</button>
@@ -40,6 +45,9 @@ async function filtrerCatalogue(type = '') {
                     </div>
                 `;
             } else {
+                affichagePrix = (vehicule.prix_location && parseInt(vehicule.prix_location) > 0)
+                    ? `${vehicule.prix_location} € / mois`
+                    : "Tarif non disponible";
                 boutonsHtml = `
                     <div class="d-grid mt-3">
                         <button class="btn btn-info btn-sm text-white" onclick="initierContact('location', '${vehicule.marque} ${vehicule.modele}', ${vehicule.id})">Postuler à la location</button>
@@ -57,7 +65,7 @@ async function filtrerCatalogue(type = '') {
                                     ${vehicule.type_commercial === 'achat' ? 'Achat d\'occasion' : 'Location longue durée'}
                                 </span>
                                 <h4 class="text-primary fw-semibold mb-2">
-                                    ${vehicule.type_commercial === 'achat' ? vehicule.prix + ' €' : vehicule.prix + ' € / mois'}
+                                    ${affichagePrix}
                                 </h4>
                                 ${vehicule.options_incluses ? `<p class="card-text small text-muted mt-2"><strong>Inclus :</strong> ${vehicule.options_incluses}</p>` : ''}
                             </div>
