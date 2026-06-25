@@ -48,17 +48,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const dateOption = { year: 'numeric', month: 'long', day: 'numeric' };
                     const dateLisible = new Date(demande.cree_le).toLocaleDateString('fr-FR', dateOption);
 
-                    // Définition de la couleur du badge Bootstrap selon le statut
+                    // Définition de la couleur du badge Bootstrap et traduction du statut réel de la BDD
                     let classeBadge = 'bg-secondary';
-                    if (demande.statut === 'En cours d\'étude') classeBadge = 'bg-warning text-dark';
-                    if (demande.statut === 'Approuvé') classeBadge = 'bg-success';
-                    if (demande.statut === 'Refusé') classeBadge = 'bg-danger';
+                    let texteStatut = demande.statut;
+
+                    if (demande.statut === 'en_attente') {
+                        classeBadge = 'bg-warning text-dark';
+                        texteStatut = 'En attente';
+                    } else if (demande.statut === 'valide') {
+                        classeBadge = 'bg-success';
+                        texteStatut = 'Validé';
+                    } else if (demande.statut === 'refuse') {
+                        classeBadge = 'bg-danger';
+                        texteStatut = 'Refusé';
+                    }
 
                     ligne.innerHTML = `
                         <td class="small">${dateLisible}</td>
                         <td class="fw-bold small text-uppercase">${demande.type_demande}</td>
                         <td class="small">${demande.vehicule_nom}</td>
-                        <td><span class="badge ${classeBadge}">${demande.statut}</span></td>
+                        <td><span class="badge ${classeBadge}">${texteStatut}</span></td>
                     `;
                     listeDemandes.appendChild(ligne);
                 });
