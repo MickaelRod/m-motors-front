@@ -48,6 +48,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const dateOption = { year: 'numeric', month: 'long', day: 'numeric' };
                     const dateLisible = new Date(demande.cree_le).toLocaleDateString('fr-FR', dateOption);
 
+                    // Traduction ergonomique des types de demandes reçus de la BDD
+                    let libelleType = demande.type_demande;
+                    if (demande.type_demande === 'achat') libelleType = 'Achat comptant';
+                    else if (demande.type_demande === 'location') libelleType = 'Location (LLD)';
+                    else if (demande.type_demande === 'financement') libelleType = 'Achat avec financement';
+                    else if (demande.type_demande === 'autre') libelleType = 'Demande générale';
+
                     // Définition de la couleur du badge Bootstrap et traduction du statut réel de la BDD
                     let classeBadge = 'bg-secondary';
                     let texteStatut = demande.statut;
@@ -65,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                     ligne.innerHTML = `
                         <td class="small">${dateLisible}</td>
-                        <td class="fw-bold small text-uppercase">${demande.type_demande}</td>
+                        <td class="fw-bold small text-uppercase">${libelleType}</td>
                         <td class="small">${demande.vehicule_nom}</td>
                         <td><span class="badge ${classeBadge}">${texteStatut}</span></td>
                     `;
