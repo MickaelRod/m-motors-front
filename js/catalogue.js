@@ -1,10 +1,12 @@
 // Fonction pour récupérer et afficher les véhicules depuis l'API PHP
 async function filtrerCatalogue(type = '') {
-    // Gestion active des classes de boutons Bootstrap
-    document.querySelectorAll('.d-flex .btn').forEach(btn => btn.classList.remove('active'));
-    if (type === '') document.getElementById('btn-tous').classList.add('active');
-    if (type === 'achat') document.getElementById('btn-achat').classList.add('active');
-    if (type === 'location') document.getElementById('btn-location').classList.add('active');
+    // Nettoyage de la classe active sur TOUS les boutons du groupe
+    document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active-filter'));
+    
+    // Application de la classe uniquement au bouton cliqué
+    if (type === '') document.getElementById('btn-tous').classList.add('active-filter');
+    if (type === 'achat') document.getElementById('btn-achat').classList.add('active-filter');
+    if (type === 'location') document.getElementById('btn-location').classList.add('active-filter');
 
     // Détection automatique de l'environnement (Local vs Production)
     const estLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
