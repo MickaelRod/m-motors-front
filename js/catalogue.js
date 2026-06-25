@@ -78,8 +78,48 @@ async function filtrerCatalogue(type = '') {
     }
 }
 
-// Chargement initial du catalogue complet au démarrage de la page
-document.addEventListener('DOMContentLoaded', () => filtrerCatalogue(''));
+// Chargement initial du catalogue complet et configuration du profil utilisateur connecté
+document.addEventListener('DOMContentLoaded', async () => {
+    // Exécution du filtre par défaut pour le catalogue
+    filtrerCatalogue('');
+
+    // Détection de l'environnement pour cibler l'API de session
+    const estLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const urlBaseSession = estLocalhost ? 'http://localhost:8001/api/session.php' : 'back/api/session.php';
+
+    try {
+        // Interrogation de l'API pour vérifier si une session est active
+        const reponseSession = await fetch(urlBaseSession, {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (reponseSession.ok) {
+            const resultatSession = await reponseSession.json();
+            
+            // Récupération des éléments du formulaire de contact
+            const champNom = document.getElementById('form-nom');
+            const champEmail = document.getElementById('form-email');
+            const champTelephone = document.getElementById('form-telephone');
+
+            // Injection des données de l'utilisateur connecté et verrouillage des champs
+            if (champNom && resultatSession.utilisateur.nom) {
+                champNom.value = resultatSession.utilisateur.nom;
+                champNom.readOnly = true;
+            }
+            if (champEmail && resultatSession.utilisateur.email) {
+                champEmail.value = resultatSession.utilisateur.email;
+                champEmail.readOnly = true;
+            }
+            if (champTelephone && resultatSession.utilisateur.telephone) {
+                champTelephone.value = resultatSession.utilisateur.telephone;
+                champTelephone.readOnly = true;
+            }
+        }
+    } catch (erreur) {
+        // L'exécution se poursuit normalement pour les visiteurs anonymes en cas d'absence de session
+    }
+});
 
 // Fonction pour faire défiler la page et configurer le formulaire de contact de manière structurée
 function initierContact(typeDemande, vehiculeNom, vehiculeId) {

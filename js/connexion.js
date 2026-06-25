@@ -50,16 +50,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const resultat = await reponse.json();
 
                 if (reponse.ok) {
-                    zoneReponseConnexion.className = "mt-4 alert alert-success text-center";
-                    zoneReponseConnexion.textContent = resultat.succes || "Connexion réussie.";
+                    zoneReponse.className = "mt-4 alert alert-success text-center";
+                    zoneReponse.textContent = resultat.succes || "Votre compte a été créé avec succès.";
                     
-                    // Stockage temporaire du nom dans le stockage de session du navigateur pour l'affichage immédiat
-                    sessionStorage.setItem('utilisateur_nom', resultat.utilisateur.nom);
+                    // Réinitialisation du formulaire après inscription réussie
+                    formulaireInscription.reset();
                     
-                    // Redirection automatique vers l'espace client sécurisé
+                    // Redirection vers la section de connexion après un léger délai visuel
                     setTimeout(() => {
-                        window.location.href = 'espaceclient.html';
-                    }, 1000);
+                        zoneReponse.classList.add('d-none');
+                    }, 3000);
                 } else {
                     zoneReponse.className = "mt-4 alert alert-danger text-center";
                     zoneReponse.textContent = resultat.erreur || "Une erreur est survenue lors de l'inscription.";
