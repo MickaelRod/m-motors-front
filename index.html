@@ -59,7 +59,7 @@
         </div>
     </main>
 
-    <!-- NOUVELLE SECTION : Services & Engagements (Réponse à l'énoncé) -->
+    <!-- Section Services -->
     <section id="services" class="bg-white py-5 border-top">
         <div class="container">
             <h2 class="text-center fw-bold mb-5">Services M-Motors</h2>
@@ -83,6 +83,7 @@
         </div>
     </section>
 
+    <!-- Section Engagements -->
     <section id="engagements" class="py-5 bg-light border-top">
         <div class="container text-center" style="max-width: 800px;">
             <h2 class="fw-bold mb-4">Nos engagements sécurité</h2>
@@ -90,11 +91,48 @@
         </div>
     </section>
 
-    <!-- Zone Contact (Prévue pour la User Story 2) -->
+    <!-- Section Contact -->
     <section id="contact" class="py-5 bg-white border-top">
-        <div class="container text-center">
-            <h2 class="fw-bold mb-4">Contactez notre service commercial</h2>
-            <p class="text-muted">Le formulaire de dépôt de pièces justificatives et de demande de renseignements sera disponible ici.</p>
+        <div class="container" style="max-width: 700px;">
+            <h2 class="text-center fw-bold mb-2">Contactez notre service commercial</h2>
+            <p class="text-center text-muted mb-5">Pour une demande d'information ou un dépôt de dossier de financement, utilisez le formulaire ci-dessous.</p>
+            
+            <form id="formulaire-contact" enctype="multipart/form-data" class="shadow-sm p-4 border rounded bg-light">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="form-nom" class="form-label small fw-bold">Nom complet</label>
+                        <input type="text" class="form-control" id="form-nom" required placeholder="Jean Dupont">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="form-telephone" class="form-label small fw-bold">Numéro de téléphone</label>
+                        <input type="tel" class="form-control" id="form-telephone" required placeholder="06 12 34 56 78">
+                    </div>
+                    <div class="col-12">
+                        <label for="form-email" class="form-label small fw-bold">Adresse email</label>
+                        <input type="email" class="form-control" id="form-email" required placeholder="jean.dupont@exemple.com">
+                    </div>
+                    <div class="col-12">
+                        <label for="form-sujet" class="form-label small fw-bold">Sujet de votre demande</label>
+                        <input type="text" class="form-control" id="form-sujet" required placeholder="Ex: Demande de renseignements">
+                    </div>
+                    <div class="col-12">
+                        <label for="form-message" class="form-label small fw-bold">Votre message</label>
+                        <textarea class="form-control" id="form-message" rows="4" required placeholder="Précisez votre demande..."></textarea>
+                    </div>
+                    
+                    <div class="col-12">
+                        <label for="form-document" class="form-label small fw-bold">Pièce justificative <span class="text-muted fw-normal">(Optionnel - PDF, JPG, PNG)</span></label>
+                        <input type="file" class="form-control" id="form-document" accept=".pdf,.jpg,.jpeg,.png">
+                        <div class="form-text xsmall">Obligatoire pour l'étude des dossiers de financement ou de location (LLD).</div>
+                    </div>
+                    
+                    <div class="col-12 text-center mt-4">
+                        <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">Envoyer ma demande</button>
+                    </div>
+                </div>
+            </form>
+            
+            <div id="form-reponse" class="mt-4 d-none"></div>
         </div>
     </section>
 
@@ -105,7 +143,7 @@
         </div>
     </footer>
 
-    <script src="js/catalogue.js?v=1.1"></script>
+    <script src="js/catalogue.js?v=1.2"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
