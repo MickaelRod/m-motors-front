@@ -29,20 +29,20 @@ async function filtrerCatalogue(type = '') {
             return;
         }
 
-        // Injection dynamique des cartes de véhicules avec boutons d'action contextuels et transmission de l'ID
+        // Injection dynamique des cartes de véhicules avec boutons d'action contextuels et transmission des références
         vehicules.forEach(vehicule => {
             let boutonsHtml = '';
             if (vehicule.type_commercial === 'achat') {
                 boutonsHtml = `
                     <div class="d-grid gap-2 mt-3">
-                        <button class="btn btn-primary btn-sm" onclick="initierContact('Achat comptant', '${vehicule.marque} ${vehicule.modele}', ${vehicule.id})">Acheter comptant</button>
-                        <button class="btn btn-outline-primary btn-sm" onclick="initierContact('Demande de financement', '${vehicule.marque} ${vehicule.modele}', ${vehicule.id})">Demander un financement</button>
+                        <button class="btn btn-primary btn-sm" onclick="initierContact('achat', '${vehicule.marque} ${vehicule.modele}', ${vehicule.id})">Acheter comptant</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="initierContact('financement', '${vehicule.marque} ${vehicule.modele}', ${vehicule.id})">Acheter avec demande de financement</button>
                     </div>
                 `;
             } else {
                 boutonsHtml = `
                     <div class="d-grid mt-3">
-                        <button class="btn btn-info btn-sm text-white" onclick="initierContact('Location LLD', '${vehicule.marque} ${vehicule.modele}', ${vehicule.id})">Postuler à la location</button>
+                        <button class="btn btn-info btn-sm text-white" onclick="initierContact('location', '${vehicule.marque} ${vehicule.modele}', ${vehicule.id})">Postuler à la location</button>
                     </div>
                 `;
             }
@@ -54,7 +54,7 @@ async function filtrerCatalogue(type = '') {
                             <div>
                                 <h5 class="card-title fw-bold mb-1">${vehicule.marque} - ${vehicule.modele}</h5>
                                 <span class="badge ${vehicule.type_commercial === 'achat' ? 'bg-success' : 'bg-info'} mb-3">
-                                    ${vehicule.type_commercial === 'achat' ? 'Achat Occasion' : 'Location Longue Durée'}
+                                    ${vehicule.type_commercial === 'achat' ? 'Achat d\'occasion' : 'Location longue durée'}
                                 </span>
                                 <h4 class="text-primary fw-semibold mb-2">
                                     ${vehicule.type_commercial === 'achat' ? vehicule.prix + ' €' : vehicule.prix + ' € / mois'}
@@ -81,14 +81,26 @@ async function filtrerCatalogue(type = '') {
 // Chargement initial du catalogue complet au démarrage de la page
 document.addEventListener('DOMContentLoaded', () => filtrerCatalogue(''));
 
-// Fonction pour faire défiler la page et pré-remplir le sujet avec la référence ID unique
+// Fonction pour faire défiler la page et configurer le formulaire de contact de manière structurée
 function initierContact(typeDemande, vehiculeNom, vehiculeId) {
-    const champSujet = document.getElementById('form-sujet');
-    if (champSujet) {
-        champSujet.value = `${typeDemande} - ${vehiculeNom} (Réf : #${vehiculeId})`;
+    const selectType = document.getElementById('form-type-demande');
+    const inputVehiculeNom = document.getElementById('form-vehicule-nom');
+    const inputVehiculeId = document.getElementById('form-vehicule-id');
+    const blocInfoFinancement = document.getElementById('bloc-info-financement');
+
+    if (selectType) selectType.value = typeDemande;
+    if (inputVehiculeNom) inputVehiculeNom.value = vehiculeNom;
+    if (inputVehiculeId) inputVehiculeId.value = vehiculeId;
+    
+    // Affichage ou masquage du bloc informatif selon le type d'aiguillage
+    if (blocInfoFinancement) {
+        if (typeDemande === 'financement') {
+            blocInfoFinancement.classList.remove('d-none');
+        } else {
+            blocInfoFinancement.classList.add('d-none');
+        }
     }
     
-    // Défilement fluide vers la section de contact
     const sectionContact = document.getElementById('contact');
     if (sectionContact) {
         sectionContact.scrollIntoView({ behavior: 'smooth' });
@@ -100,6 +112,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const formulaire = document.getElementById('formulaire-contact');
     if (!formulaire) return;
 
+    // Gestion de l'affichage dynamique du message d'information pour le financement
+    const selectTypeDemande = document.getElementById('form-type-demande');
+    const blocInfoFinancement = document.getElementById('bloc-info-financement');
+    if (selectTypeDemande && blocInfoFinancement) {
+        selectTypeDemande.addEventListener('change', () => {
+            if (selectTypeDemande.value === 'financement') {
+                blocInfoFinancement.classList.remove('d-none');
+            } else {
+                blocInfoFinancement.classList.add('d-none');
+            }
+        });
+    }    
+
     formulaire.addEventListener('submit', async (e) => {
         e.preventDefault(); // Empêche le rechargement de la page
 
@@ -108,17 +133,19 @@ document.addEventListener('DOMContentLoaded', () => {
         zoneReponse.textContent = "Envoi de votre demande en cours...";
         zoneReponse.classList.remove('d-none');
 
-        // Récupération automatique de tous les champs et du fichier joint
-        const donnéesFormulaire = new FormData();
-        donnéesFormulaire.append('nom', document.getElementById('form-nom').value);
-        donnéesFormulaire.append('telephone', document.getElementById('form-telephone').value);
-        donnéesFormulaire.append('email', document.getElementById('form-email').value);
-        donnéesFormulaire.append('sujet', document.getElementById('form-sujet').value);
-        donnéesFormulaire.append('message', document.getElementById('form-message').value);
+        // Récupération automatique des variables textuelles et des références structurées
+        const donneesFormulaire = new FormData();
+        donneesFormulaire.append('nom', document.getElementById('form-nom').value);
+        donneesFormulaire.append('telephone', document.getElementById('form-telephone').value);
+        donneesFormulaire.append('email', document.getElementById('form-email').value);
+        donneesFormulaire.append('type_demande', document.getElementById('form-type-demande').value);
+        donneesFormulaire.append('vehicule_id', document.getElementById('form-vehicule-id').value);
+        donneesFormulaire.append('vehicule_nom', document.getElementById('form-vehicule-nom').value);
+        donneesFormulaire.append('message', document.getElementById('form-message').value);
 
         const champFichier = document.getElementById('form-document');
         if (champFichier.files.length > 0) {
-            donnéesFormulaire.append('document', champFichier.files[0]);
+            donneesFormulaire.append('document', champFichier.files[0]);
         }
 
         // Détection de l'environnement pour cibler la bonne URL d'API
@@ -130,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const reponse = await fetch(urlAction, {
                 method: 'POST',
-                body: donnéesFormulaire // Envoi direct du FormData (le navigateur gère les entêtes multi-part automatiquement)
+                body: donneesFormulaire // Envoi direct du FormData (le navigateur gère les entêtes multi-part automatiquement)
             });
 
             const resultat = await reponse.json();
@@ -145,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (erreur) {
             zoneReponse.className = "mt-4 alert alert-danger text-center";
-            zoneReponse.textContent = "Impossible de joindre le serveur de messagerie.";
+            zoneReponse.textContent = "Impossible de joindre le serveur de messagerie pour le moment.";
         }
     });
 });
