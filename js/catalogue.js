@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Détection de l'environnement pour cibler l'API de session
     const estLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const urlBaseSession = estLocalhost ? 'http://localhost:8001/api/session.php' : 'back/api/session.php';
+    const urlBaseSession = estLocalhost ? 'http://localhost:8001/api/session_client.php' : 'back/api/session_client.php';
 
     try {
         // Interrogation de l'API pour vérifier si une session est active
