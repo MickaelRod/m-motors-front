@@ -1,6 +1,6 @@
 # M-Motors : Front-Office
 
-Interface utilisateur du site M-Motors, entreprise fictive de ventes et de location de véhicules.
+Interface utilisateur du site M-Motors, entreprise fictive de ventes et de location (LLD) de véhicules.
 
 ## Fonctionnalités
 
