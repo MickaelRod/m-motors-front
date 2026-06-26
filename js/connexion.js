@@ -1,25 +1,20 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // Détection de l'environnement pour définir l'URL de base de l'API
-    const estLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const urlBase = estLocalhost ? 'http://localhost:8001/api/' : 'back/api/';
-
-    // Vérification initiale : si l'utilisateur est déjà connecté, redirection vers son espace
+    // Vérification initiale : redirection vers l'espace client si déjà connecté
     try {
-        const reponseSession = await fetch(urlBase + 'session_client.php', {
+        const reponseSession = await fetch(URL_API + 'session_client.php', {
             method: 'GET',
             credentials: 'include'
         });
-        
         if (reponseSession.ok) {
             window.location.replace('espaceclient.html');
-            return; // Arrêt de l'exécution du reste du script
+            return;
         }
     } catch (erreur) {
-        // En cas d'erreur réseau, l'exécution se poursuit normalement sur les formulaires
+        // Poursuite normale en cas d'erreur réseau
     }
 
     const formulaireInscription = document.getElementById('formulaire-inscription');
-    const formulaireConnexion = document.getElementById('formulaire-connexion');
+    const formulaireConnexion   = document.getElementById('formulaire-connexion');
 
     // Gestion du formulaire d'inscription
     if (formulaireInscription) {
@@ -32,18 +27,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             zoneReponse.classList.remove('d-none');
 
             const donneesInscription = {
-                nom: document.getElementById('insc-nom').value,
-                email: document.getElementById('insc-email').value,
-                telephone: document.getElementById('insc-telephone').value,
+                nom:          document.getElementById('insc-nom').value,
+                email:        document.getElementById('insc-email').value,
+                telephone:    document.getElementById('insc-telephone').value,
                 mot_de_passe: document.getElementById('insc-mot-de-passe').value
             };
 
             try {
-                const reponse = await fetch(urlBase + 'inscription.php', {
+                const reponse = await fetch(URL_API + 'inscription.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    },
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
                     body: JSON.stringify(donneesInscription)
                 });
 
@@ -52,14 +45,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (reponse.ok) {
                     zoneReponse.className = "mt-4 alert alert-success text-center";
                     zoneReponse.textContent = resultat.succes || "Votre compte a été créé avec succès.";
-                    
-                    // Réinitialisation du formulaire après inscription réussie
                     formulaireInscription.reset();
-                    
-                    // Redirection vers la section de connexion après un léger délai visuel
-                    setTimeout(() => {
-                        zoneReponse.classList.add('d-none');
-                    }, 3000);
+                    setTimeout(() => zoneReponse.classList.add('d-none'), 3000);
                 } else {
                     zoneReponse.className = "mt-4 alert alert-danger text-center";
                     zoneReponse.textContent = resultat.erreur || "Une erreur est survenue lors de l'inscription.";
@@ -82,16 +69,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             zoneReponseConnexion.classList.remove('d-none');
 
             const donneesConnexion = {
-                email: document.getElementById('conn-email').value,
+                email:        document.getElementById('conn-email').value,
                 mot_de_passe: document.getElementById('conn-mot-de-passe').value
             };
 
             try {
-                const reponse = await fetch(urlBase + 'connexion_client.php', {
+                const reponse = await fetch(URL_API + 'connexion_client.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    },
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
                     body: JSON.stringify(donneesConnexion),
                     credentials: 'include'
                 });
@@ -102,10 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (statutOk) {
                     zoneReponseConnexion.className = "mt-4 alert alert-success text-center";
                     zoneReponseConnexion.textContent = resultat.succes || "Connexion réussie.";
-                    
                     sessionStorage.setItem('utilisateur_nom', resultat.utilisateur.nom);
-                    
-                    // Utilisation d'une redirection immediate sans delai pour contourner les blocages de pile asynchrone
                     window.location.replace('espaceclient.html');
                 } else {
                     zoneReponseConnexion.className = "mt-4 alert alert-danger text-center";
