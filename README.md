@@ -23,6 +23,8 @@ Interface utilisateur du site M-Motors, entreprise fictive de ventes et de locat
 index.html          Page principale (catalogue + formulaire de contact)
 connexion.html      Page d'authentification et d'inscription
 espaceclient.html   Espace de suivi des demandes (accès authentifié)
+css/
+  style.css         Styles custom (hero, transitions, filtre actif)
 js/
   config.js         URL de base de l'API (variable d'environnement JS)
   catalogue.js      Chargement du catalogue, filtres, initiation de contact
