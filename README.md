@@ -1,12 +1,42 @@
-# M-Motors - Interface Utilisateur (Front-Office)
+# M-Motors — Front-Office Client
 
-Ce dépôt centralise l'ensemble des composants de l'interface utilisateur cliente et les scripts JavaScript asynchrones de l'application M-Motors.
+Interface utilisateur du site M-Motors, entreprise fictive de ventes et de location de véhicules.
 
-## Architecture & Déploiement
-* **Branche `main`** : Branche de production contenant le code stable, déployée de manière continue vers le serveur Web.
-* **Branche `dev`** : Branche d'intégration regroupant les développements des différentes User Stories du Backlog avant validation.
+## Fonctionnalités
 
-## Fonctionnalités intégrées
-* Catalogue dynamique avec aiguillage et filtres de recherche (Achat / Location LLD).
-* Formulaire de contact contextuel avec module de téléversement sécurisé des pièces justificatives.
-* Espace client et procédure d'authentification sécurisée.
+- **Catalogue dynamique** : affichage des véhicules via l'API back-office, filtrable par type (Tous / Achat / Location)
+- **Formulaire de contact contextuel** : pré-remplissage automatique depuis le catalogue (véhicule, type de demande), téléversement sécurisé de pièces justificatives (PDF, JPG, PNG)
+- **Authentification client** : connexion / déconnexion sécurisée, session PHP nommée distincte de celle du back-office
+- **Espace client** : consultation du suivi des demandes personnelles (type, véhicule, statut)
+- **Inscription** : création de compte avec validation des données côté serveur
+
+## Stack technique
+
+- HTML5 / CSS3 (Bootstrap 5)
+- JavaScript vanilla (Fetch API, async/await)
+- Communication avec le back-office via API REST PHP (cross-origin avec credentials)
+- GitHub Actions (CI/CD FTP vers Hostinger)
+
+## Architecture
+
+```text
+index.html          Page principale (catalogue + formulaire de contact)
+connexion.html      Page d'authentification et d'inscription
+espaceclient.html   Espace de suivi des demandes (accès authentifié)
+js/
+  config.js         URL de base de l'API (variable d'environnement JS)
+  catalogue.js      Chargement du catalogue, filtres, initiation de contact
+  connexion.js      Connexion, inscription, déconnexion
+  espaceclient.js   Récupération et affichage des demandes de l'utilisateur connecté
+```
+
+## Sécurité
+
+- Aucune donnée sensible stockée côté client (sessionStorage limité au nom d'affichage)
+- Credentials inclus dans les requêtes Fetch (`credentials: 'include'`) pour la gestion des sessions
+- Champs pré-remplis depuis la session marqués `readOnly` pour empêcher la falsification côté client
+- Toute validation métier déléguée au back-office PHP
+
+## Déploiement
+
+Push sur `main` → déploiement automatique via GitHub Actions FTP vers hébergement (`public_html/front/`).
