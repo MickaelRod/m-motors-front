@@ -105,14 +105,14 @@ function initierContact(typeDemande, vehiculeNom, vehiculeId) {
     const selectType        = document.getElementById('form-type-demande');
     const inputVehiculeNom  = document.getElementById('form-vehicule-nom');
     const inputVehiculeId   = document.getElementById('form-vehicule-id');
-    const blocInfoFinancement = document.getElementById('bloc-info-financement');
+    const blocInfoSuivi = document.getElementById('bloc-info-suivi');
 
     if (selectType)       selectType.value = typeDemande;
     if (inputVehiculeNom) inputVehiculeNom.value = vehiculeNom;
     if (inputVehiculeId)  inputVehiculeId.value = vehiculeId;
 
-    if (blocInfoFinancement) {
-        blocInfoFinancement.classList.toggle('d-none', typeDemande !== 'financement');
+    if (blocInfoSuivi) {
+        blocInfoSuivi.classList.toggle('d-none', typeDemande !== 'financement' && typeDemande !== 'location');
     }
 
     const sectionContact = document.getElementById('contact');
@@ -125,11 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!formulaire) return;
 
     const selectTypeDemande   = document.getElementById('form-type-demande');
-    const blocInfoFinancement = document.getElementById('bloc-info-financement');
+    const blocInfoSuivi = document.getElementById('bloc-info-suivi');
 
-    if (selectTypeDemande && blocInfoFinancement) {
+    if (selectTypeDemande && blocInfoSuivi) {
         selectTypeDemande.addEventListener('change', () => {
-            blocInfoFinancement.classList.toggle('d-none', selectTypeDemande.value !== 'financement');
+            blocInfoSuivi.classList.toggle('d-none', selectTypeDemande.value !== 'financement' && selectTypeDemande.value !== 'location');
         });
     }
 
