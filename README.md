@@ -1,4 +1,4 @@
-# M-Motors — Front-Office Client
+# M-Motors : Front-Office
 
 Interface utilisateur du site M-Motors, entreprise fictive de ventes et de location de véhicules.
 
