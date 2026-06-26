@@ -56,7 +56,7 @@ async function filtrerCatalogue(type = '') {
                                     ${vehicule.type_commercial === 'achat' ? "Achat d'occasion" : 'Location longue durée'}
                                 </span>
                                 <h4 class="text-primary fw-semibold mb-2">${affichagePrix}</h4>
-                                ${vehicule.options_incluses ? `<p class="card-text small text-muted mt-2"><strong>Inclus :</strong> ${vehicule.options_incluses}</p>` : ''}
+                                ${vehicule.type_commercial === 'location' && vehicule.options_incluses ? `<p class="card-text small text-muted mt-2"><strong>Inclus :</strong> ${vehicule.options_incluses}</p>` : ''}
                             </div>
                             ${boutonsHtml}
                         </div>
